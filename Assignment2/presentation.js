@@ -36,7 +36,7 @@ async function main() {
         }
         else if(option === 4){// to add a new tag to a photo
             let id = Number(prompt('Photo ID? '))
-            let newTag = prompt('New tag ('+ await business.displayPhotoTags(await business.findPhoto(id), ', ') + ')? ')// display existing tags
+            let newTag = prompt('New tag ('+ await business.displayPhotoTags(await business.getPhotoByID(id), ', ',id) + ')? ')// display existing tags
             let message = await business.addTagToPhoto(id, newTag)
             console.log(message)
         }

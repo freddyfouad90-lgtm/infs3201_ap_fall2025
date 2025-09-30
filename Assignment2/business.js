@@ -27,12 +27,13 @@ async function displayPhotoAlbum(photo) {
 
 /**
  * //   this function will display the tags of the photo
+ * @param {number} id -- the id of the photo to search for
  * @param {} photo-- the object of the photo 
  * @param {string} sep -- the separator between the tags
  * @returns --  the tags of the photo
  */
-async function displayPhotoTags(photo,sep) {
-    if(photo === null){
+async function displayPhotoTags(photo,sep,id) {
+    if(photo === null || photo === `Sorry can't find photo with ID => ${id}`){
         return 'No tags found'
     }
     let tags = photo.tags  // get the tags of the photo
@@ -87,7 +88,7 @@ async function displayPhoto(id) {
         return `Sorry can't find photo with ID => ${id}`
     }
     else{
-        return  `FileName: ,${photo.filename}\nTile: , ${photo.title}\nDate: , ${new Date(photo.date).toDateString()}\nAlbums: ,${await displayPhotoAlbum(photo)}\nTags: , ${await displayPhotoTags(photo,', ')}\n` 
+        return  `FileName: ${photo.filename}\nTile: ${photo.title}\nDate: ${new Date(photo.date).toDateString()}\nAlbums: ${await displayPhotoAlbum(photo)}\nTags: ${await displayPhotoTags(photo,', ', id)}\n` 
     }
 
 }
@@ -185,7 +186,7 @@ async function albumPhotoList(name) {
         for(aID of p.albums){ // loop through the album ids in the photo object
             if(aID === albumID){ // if the album id in the photo object matches the album id of the album with the given name
                 finalMessage += p.filename + ', ' + p.resolution + ', '
-                finalMessage += await displayPhotoTags(p,': ') // get the tags of the photo
+                finalMessage += await displayPhotoTags(p,': ', photos.id) // get the tags of the photo
                 finalMessage = finalMessage 
                 finalMessage += '\n'
             }
@@ -218,6 +219,17 @@ async function updatePhototag(id, newTag){
     await persistence.writePhotoDetails(photos)
 }
 
+async function getPhotoByID(id){
+    let photo = await persistence.findPhoto(id)
+    if(photo === null){
+        return `Sorry can't find photo with ID => ${id}`
+    }
+    else{
+        return photo
+    }
+    
+}
+
 /**
  * this function will add a new tag to the photo with the given id
  * @param {*} id the id of the photo to be updated
@@ -248,6 +260,8 @@ module.exports = {
     updatePhotos,
     albumPhotoList,
     addTagToPhoto,
+    displayPhotoTags,
     displayPhototitle,
     displayPhotodes,
+    getPhotoByID
 }

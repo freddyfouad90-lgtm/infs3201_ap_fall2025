@@ -264,7 +264,7 @@
   {
     "id": 73109,
     "filename": "cave.jpg",
-    "title": "Dark Cave",
+    "title": "Scary Cave",
     "date": "2024-05-06T21:10:00",
     "description": "A mysterious cave entrance hidden by rocks.",
     "resolution": "1600x1200",
@@ -274,7 +274,8 @@
     "tags": [
       "cave",
       "rocks",
-      "explore"
+      "explore",
+      "work"
     ]
   },
   {
