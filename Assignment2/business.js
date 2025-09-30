@@ -102,7 +102,6 @@ async function updatePhotoTitle(id, newTitle){
     for (p of photos){
         if(p.id === id){
             p.title = newTitle
-            console.log('Title updated successfully')
         }
     }
 
@@ -119,7 +118,6 @@ async function updatePhotoDes(id, newDes){
     for (p of photos){
         if(p.id === id){
             p.description = newDes
-            console.log('Description updated successfully')
         }
     }
 
@@ -137,12 +135,8 @@ async function updatePhotos(id,updatedTitle,updatedDes) {
     let photo = await persistence.findPhoto(id)
 
     if(photo === null){ // if the photo with the given id is not found
-        console.log(`Sorry can't find photo with ID => ${id}`)
-        return
+        return `Sorry can't find photo with ID => ${id}`
     }
-
-    // console.log('Press enter reuse existing value.')
-    // let updatedTitle = prompt(`Enter value for title [${photo.title}]: `)
     
     if(updatedTitle == ''){
         
@@ -151,7 +145,6 @@ async function updatePhotos(id,updatedTitle,updatedDes) {
         await updatePhotoTitle(id, updatedTitle)
     }
 
-    // let updatedDes = prompt(`Enter value for description [${photo.description}]: `)
     if(updatedDes == ''){
         
     }
@@ -160,10 +153,10 @@ async function updatePhotos(id,updatedTitle,updatedDes) {
     }
 
     if (updatedTitle == '' && updatedDes == ''){ // if no changes were made
-        console.log('No changes made')
+        return 'No changes made'
     }
     else{
-        console.log('Photo updated successfully')
+        return 'Photo updated successfully'
     }
 }
 

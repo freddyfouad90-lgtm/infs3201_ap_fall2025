@@ -27,7 +27,7 @@ async function main() {
             console.log('Press enter reuse existing value.')
             let updatedTitle = prompt(`Enter value for title [${await business.displayPhototitle(id)}]: `)
             let updatedDes = prompt(`Enter value for description [${await business.displayPhotodes(id)}]: `)
-            await business.updatePhotos(id,updatedTitle,updatedDes)
+            console.log(await business.updatePhotos(id,updatedTitle,updatedDes))
         }
         else if(option === 3){// to display photos in an album
             let name = prompt('Album name? ')
