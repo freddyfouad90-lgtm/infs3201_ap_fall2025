@@ -11,8 +11,7 @@ async function displayPhotoAlbum(photo) {
     
     albumNames = '' // epmty string to store the names of the albums
     if(albums.length === 0){
-        console.log('No albums')
-        return
+        return 'No albums'
     }
     else{
         for(id of albumsID){ // loop through the album ids in the photo object
@@ -38,8 +37,7 @@ async function displayPhotoTags(photo,sep) {
     }
     let tags = photo.tags  // get the tags of the photo
     if(tags.length === 0){
-        console.log('No tags')
-        return
+        return 'No tags'
     }
     else{
         let tagsString = '' // empty string to store the tags
@@ -50,20 +48,46 @@ async function displayPhotoTags(photo,sep) {
     }       
 }
 
+/**
+ * // this function will display the title of the photo with the given id
+ * @param {*} id // the id of the photo to search for
+ * @returns // the title of the photo with the given id
+ */
+async function displayPhototitle(id){
+    let photo = await persistence.findPhoto(id)
+    if(photo === null){
+        return `Sorry can't find photo with ID => ${id}`
+    }
+    else{
+        return photo.title
+    }
+}
+
+/**
+ * // this function will display the description of the photo with the given id
+ * @param {number} id 
+ * @returns // the description of the photo with the given id
+ */
+async function displayPhotodes(id){
+    let photo = await persistence.findPhoto(id)
+    if(photo === null){
+        return `Sorry can't find photo with ID => ${id}`
+    }
+    else{
+        return photo.description
+    }
+}
+
 /** this function will display the details of the photo with the given id
  * @param {number} id 
  */
 async function displayPhoto(id) {
     let photo = await persistence.findPhoto(id)
     if(photo === null){
-        console.log(`Sorry can't find photo with ID => ${id}`)
+        return `Sorry can't find photo with ID => ${id}`
     }
     else{
-        console.log('FileName: ',photo.filename)
-        console.log('Tile: ', photo.title)
-        console.log('Date: ', new Date(photo.date).toDateString())
-        console.log('Albums: ',await displayPhotoAlbum(photo))
-        console.log('Tags: ', await displayPhotoTags(photo,', ')) 
+        return  `FileName: ,${photo.filename}\nTile: , ${photo.title}\nDate: , ${new Date(photo.date).toDateString()}\nAlbums: ,${await displayPhotoAlbum(photo)}\nTags: , ${await displayPhotoTags(photo,', ')}\n` 
     }
 
 }
@@ -108,7 +132,7 @@ async function updatePhotoDes(id, newDes){
  * if the user presses enter without entering any value, the existing value will be reused
  * @param {number} id
  */
-async function updatePhotos(id) {
+async function updatePhotos(id,updatedTitle,updatedDes) {
     
     let photo = await persistence.findPhoto(id)
 
@@ -117,8 +141,8 @@ async function updatePhotos(id) {
         return
     }
 
-    console.log('Press enter reuse existing value.')
-    let updatedTitle = prompt(`Enter value for title [${photo.title}]: `)
+    // console.log('Press enter reuse existing value.')
+    // let updatedTitle = prompt(`Enter value for title [${photo.title}]: `)
     
     if(updatedTitle == ''){
         
@@ -127,7 +151,7 @@ async function updatePhotos(id) {
         await updatePhotoTitle(id, updatedTitle)
     }
 
-    let updatedDes = prompt(`Enter value for description [${photo.description}]: `)
+    // let updatedDes = prompt(`Enter value for description [${photo.description}]: `)
     if(updatedDes == ''){
         
     }
@@ -230,5 +254,7 @@ module.exports = {
     displayPhoto,
     updatePhotos,
     albumPhotoList,
-    addTagToPhoto
+    addTagToPhoto,
+    displayPhototitle,
+    displayPhotodes,
 }

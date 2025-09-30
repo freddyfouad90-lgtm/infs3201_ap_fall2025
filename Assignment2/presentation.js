@@ -20,11 +20,14 @@ async function main() {
 
         if(option === 1 ){ // to find and display photo details
             let id =  Number(prompt('Photo ID? '))
-            await business.displayPhoto(id)
+            console.log(await business.displayPhoto(id))
         }
         else if(option === 2){// to update photo details
             let id = Number(prompt("Enter photo ID to update: "))
-            await business.updatePhotos(id)
+            console.log('Press enter reuse existing value.')
+            let updatedTitle = prompt(`Enter value for title [${await business.displayPhototitle(id)}]: `)
+            let updatedDes = prompt(`Enter value for description [${await business.displayPhotodes(id)}]: `)
+            await business.updatePhotos(id,updatedTitle,updatedDes)
         }
         else if(option === 3){// to display photos in an album
             let name = prompt('Album name? ')
