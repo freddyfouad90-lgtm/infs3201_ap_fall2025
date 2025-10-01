@@ -46,9 +46,15 @@ async function findPhoto(id) {
     return null
 }
 
+async function readUserFile() {
+    let data = await fs.readFile('users.json', 'utf-8');
+    return JSON.parse(data);    
+}
+
 module.exports ={
     readPhotosFile,
     readAlbumsFile, 
     writePhotoDetails,
-    findPhoto
+    findPhoto,
+    readUserFile
 }
