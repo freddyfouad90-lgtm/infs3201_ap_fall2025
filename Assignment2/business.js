@@ -82,13 +82,18 @@ async function displayPhotodes(id){
 /** this function will display the details of the photo with the given id
  * @param {number} id 
  */
-async function displayPhoto(id) {
+async function displayPhoto(userID, id) {
     let photo = await persistence.findPhoto(id)
     if(photo === null){
         return `Sorry can't find photo with ID => ${id}`
     }
     else{
-        return  `FileName: ${photo.filename}\nTile: ${photo.title}\nDate: ${new Date(photo.date).toDateString()}\nAlbums: ${await displayPhotoAlbum(photo)}\nTags: ${await displayPhotoTags(photo,', ', id)}\n` 
+        if(photo.owner === userID){
+            return  `FileName: ${photo.filename}\nTile: ${photo.title}\nDate: ${new Date(photo.date).toDateString()}\nAlbums: ${await displayPhotoAlbum(photo)}\nTags: ${await displayPhotoTags(photo,', ', id)}\n` 
+        }
+        else{
+            return 'Access denied. You do not own this photo.'
+        }
     }
 
 }
@@ -126,14 +131,18 @@ async function updatePhotoDes(id, newDes){
 }
 
 /**
- * this function will update the photo with the given id
+ * this function will update the photo with the given id the user must be the owner of the photo to update it
  * it will prompt the user to enter the new title and description
  * if the user presses enter without entering any value, the existing value will be reused
  * @param {number} id
  */
-async function updatePhotos(id,updatedTitle,updatedDes) {
+async function updatePhotos(userID,id,updatedTitle,updatedDes) {
     
     let photo = await persistence.findPhoto(id)
+
+    if(photo.owner !== userID){
+        return 'Access denied. You do not own this photo.'
+    }
 
     if(photo === null){ // if the photo with the given id is not found
         return `Sorry can't find photo with ID => ${id}`
@@ -219,6 +228,11 @@ async function updatePhototag(id, newTag){
     await persistence.writePhotoDetails(photos)
 }
 
+/**
+ * // this function will get the photo with the given id
+ * @param {number} id   // the id of the photo to search for
+ * @returns    the photo with the given id
+ */
 async function getPhotoByID(id){
     let photo = await persistence.findPhoto(id)
     if(photo === null){
@@ -234,25 +248,45 @@ async function getPhotoByID(id){
  * this function will add a new tag to the photo with the given id
  * @param {*} id the id of the photo to be updated
  * @param {*} newTag the new tag to be added
+ * @param {number} userID the id of the user trying to add the tag
  * @returns the status of the operation
  */
-async function addTagToPhoto(id, newTag) {
+async function addTagToPhoto(userID, id, newTag) {
     newTag = newTag.toLowerCase()
     
     let  photo = await persistence.findPhoto(id)
+    if(photo.owner !== userID){
+        return 'Access denied. You do not own this photo.'
+    }
 
-        if (photo === null){
-            return `sorry cant find photo with the ID => ${id}`
-        }
-        else{
-            for(t of photo.tags){
-                if (t.toLowerCase() ===  newTag){
-                    return `Tag ${newTag} already exists for photo ID => ${id}`
-                }
+    if (photo === null){
+        return `sorry cant find photo with the ID => ${id}`
+    }
+    else{
+        for(t of photo.tags){
+            if (t.toLowerCase() ===  newTag){
+                return `Tag ${newTag} already exists for photo ID => ${id}`
             }
-            await updatePhototag(id, newTag)
-            return 'Updated'
         }
+        await updatePhototag(id, newTag)
+        return 'Updated'
+    }
+}
+
+/**
+ * // this function will authenticate the user with the given username and password
+ * @param {string} usename // the username of the user 
+ * @param {*} password // the password of the user
+ * @returns     //  the user object if authentication is successful, false otherwise
+ */
+async function authenticateUser(username, password) {
+    let user = await persistence.findUser(username, password);
+    if (user === null) {
+        return false
+    } 
+    else {
+        return user || true
+    }
 }
 
 module.exports = {
@@ -263,5 +297,6 @@ module.exports = {
     displayPhotoTags,
     displayPhototitle,
     displayPhotodes,
-    getPhotoByID
+    getPhotoByID,
+    authenticateUser
 }

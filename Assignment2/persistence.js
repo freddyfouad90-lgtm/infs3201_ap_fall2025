@@ -46,9 +46,44 @@ async function findPhoto(id) {
     return null
 }
 
+/**
+ * 
+ * @returns an array of user objects
+ */
 async function readUserFile() {
     let data = await fs.readFile('users.json', 'utf-8');
     return JSON.parse(data);    
+}
+
+/**
+ * // this function will find the user with the given username and password
+ * @param {string} username // the username of the user 
+ * @param {string} password // the password of the user
+ * @returns //  the user object if found, null otherwise
+ */
+async function findUser(username, password){
+    let users = await readUserFile()
+    for (u of users){
+        if (u.username === username && u.password === password){
+            return u
+        }
+    }
+    return null
+}
+
+/**
+ * // this function will find the user with the given id
+ * @param {Number} id // the id of the user 
+ * @returns //  the user object if found, null otherwise
+ */
+async function findUserByID(id){
+    let users = await readUserFile()   
+    for (u of users){
+        if (u.id === id){
+            return u
+        }
+    }
+    return null
 }
 
 module.exports ={
@@ -56,5 +91,7 @@ module.exports ={
     readAlbumsFile, 
     writePhotoDetails,
     findPhoto,
-    readUserFile
+    readUserFile,
+    findUser,
+    findUserByID
 }
